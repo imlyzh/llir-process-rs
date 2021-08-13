@@ -36,6 +36,9 @@ pub struct LocalIdent(pub String);
 pub struct GlobalIdent(pub String);
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct LabelIdent(pub String);
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct ComdatName(pub String);
 
 #[derive(Debug, Clone, PartialEq)]
@@ -43,6 +46,9 @@ pub struct MetadataID(pub String);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct MetadataName(pub String);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AttrGroupID(pub String);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TargetDefinition {
@@ -251,6 +257,22 @@ pub struct FunctionHeader {
     opt_personality: Option<Personality>,
 }
 
+pub type Params = Option<ParamList>;
+
+type ParamList = Vec<Param>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Param {
+    type_: Type,
+    param_attrs: Vec<ParamAttr>,
+    local_ident: Option<LocalIdent>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ParamAttr {
+    // todo !!!
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Gc(pub StringLit);
 
@@ -271,6 +293,24 @@ pub struct FunctionBody {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct BasicBlock {
+    opt_label_ident: Option<LabelIdent>,
+    instructions: Vec<Instruction>,
+    terminator: Terminator,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Instruction {
+    // todo !!!
+}
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Terminator {
+    // todo !!!
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct AttrGroupDef {
     attr_group_id: AttrGroupID,
     func_attrs: Vec<FuncAttr>,
@@ -280,13 +320,20 @@ pub struct AttrGroupDef {
 #[derive(Debug, Clone, PartialEq)]
 pub struct NamedMetadataDef {
     metadata_name: MetadataName,
-    metadata_notes: Vec<MetadataNote>,
+    metadata_nodes: Vec<MetadataNode>,
 }
 
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum MetadataNode {
+    // todo !!!
+    MetadataID(MetadataID),
+    // DIExpression(DIExpression),
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct MetadataDef {
-    metadata_id: MetadataId,
+    metadata_id: MetadataID,
     opt_distinct: OptDistinct,
     temp_metadata_body: TempMetadataBody
 }
