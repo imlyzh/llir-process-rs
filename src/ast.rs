@@ -1,9 +1,6 @@
 use std::sync::Arc;
 
 
-//todo
-
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct Module(pub Vec<TopLevelEntity>);
 
@@ -30,6 +27,9 @@ pub enum TopLevelEntity {
 pub struct StringLit(pub String);
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct IntLit(pub String);
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct LocalIdent(pub String);
 
 #[derive(Debug, Clone, PartialEq)]
@@ -49,6 +49,9 @@ pub struct MetadataName(pub String);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct AttrGroupID(pub String);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Section(pub String);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TargetDefinition {
@@ -130,19 +133,69 @@ pub enum DLLStorageClass {
 #[derive(Debug, Clone, PartialEq)]
 pub struct OptExternallyInitialized(pub bool);
 
+type Comdat = Option<ComdatName>;
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum GlobalAttr {
-    // todo!!!
-    Section(),
-    Comdat(),
-    Alignment(),
-    MetadataAttachments(),
+    Section(Section),
+    Comdat(Comdat),
+    Alignment(Alignment),
+    MetadataAttachments(MetadataAttachment),
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum FuncAttr {
-    // todo!!!
+pub struct AllocSize(pub String);
 
+#[derive(Debug, Clone, PartialEq)]
+pub struct StackAlignment(pub String);
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum FuncAttr {
+    AttrGroupID(AttrGroupID),
+    Align(String),
+    Alignstack(String),
+    Alignment(Alignment),
+    AllocSize(AllocSize),
+    StackAlignment(StackAlignment),
+    StringLit(StringLit),
+    Bind(StringLit, StringLit),
+    Alwaysinline,
+    Argmemonly,
+    Builtin,
+    Cold,
+    Convergent,
+    InaccessiblmemOrArgmemonly,
+    Inaccessiblememory,
+    Inlinehint,
+    Jumptable,
+    Minsize,
+    Naked,
+    Nobuiltin,
+    Noduplicate,
+    Noimplicitfloat,
+    Noinline,
+    Nonlazybind,
+    Norecurse,
+    Noredzone,
+    Noreturn,
+    Nounwind,
+    Optnone,
+    Optsize,
+    Readnone,
+    Readonly,
+    ReturnsTwice,
+    Safestack,
+    SanitizeAddress,
+    SanitizeHwaddress,
+    SanitizeMemory,
+    SanitizeThread,
+    Speculatable,
+    Ssp,
+    Sspreq,
+    Sspstrong,
+    Strictfp,
+    Uwtable,
+    Writeonly
 }
 
 
@@ -213,6 +266,39 @@ pub enum Alias {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct MDString(StringLit);
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum SpecializedMDNode {
+    // todo!!!
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum MetaData {
+    TypeValueBind(Type, Value),
+    MDString(MDString),
+    MDTuple(MDTuple),
+    MetadataID(MetadataID),
+    SpecializedMDNode(SpecializedMDNode),
+}
+
+pub type MDField = Option<MetaData>;
+
+pub type MDFieldList = Vec<MDField>;
+
+pub type MDFields = Option<MDFieldList>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MDTuple(MDFields);
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum MDNode {
+    MDTuple(MDTuple),
+    MetadataID(MetadataID),
+    SpecializedMDNode(SpecializedMDNode),
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct MetadataAttachment {
     metadata_name: MetadataName,
     md_node: MDNode,
@@ -236,41 +322,127 @@ pub struct FunctionDef {
     function_body: FunctionBody,
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum CallingConv {
+    AmdgpuCs,
+    AmdgpuEs,
+    AmdgpuGs,
+    AmdgpuHs,
+    AmdgpuKernel,
+    AmdgpuLs,
+    AmdgpuPs,
+    AmdgpuVs,
+    Anyregcc,
+    ArmAapcsVfpcc,
+    ArmAapcscc,
+    ArmApcscc,
+    AvrIntrcc,
+    AvrSignalcc,
+    Ccc,
+    Coldcc,
+    CxxFastTlscc,
+    Fastcc,
+    Ghccc,
+    HhvmCcc,
+    Hhvmcc,
+    IntelOclBicc,
+    Msp430Intrcc,
+    PreserveAllcc,
+    PreserveMostcc,
+    PtxDevice,
+    PtxKernel,
+    SpirFunc,
+    SpirKernel,
+    Swiftcc,
+    WebkitJscc,
+    Win64cc,
+    X86_64Sysvcc,
+    X86Fastcallcc,
+    X86Intrcc,
+    X86Regcallcc,
+    X86Stdcallcc,
+    X86Thiscallcc,
+    X86Vectorcallcc,
+    Cc(IntLit)
+}
+
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct FunctionHeader {
-    opt_preemption_specifier: Option<PreemptionSpecifier>,
-    opt_visibility: Option<Visibility>,
-    opt_dll_storage_class: Option<DLLStorageClass>,
-    opt_calling_conv: Option<CallingConvention>,
-    return_attrs: Vec<ReturnAttr>,
-    type_: Type,
-    global_ident: GlobalIdent,
-    params: Params,
-    opt_unnamed_addr: Option<UnnamedAddr>,
-    func_attrs: Vec<FuncAttr>,
-    opt_section: Option<Section>,
-    opt_comdat: Option<Comdat>,
-    opt_gc: Option<Gc>,
-    opt_prefix: Option<Prefix>,
-    opt_prologue: Option<Prologue>,
-    opt_personality: Option<Personality>,
-}
+pub struct FunctionHeader (
+    pub Option<PreemptionSpecifier>,
+    pub Option<Visibility>,
+    pub Option<DLLStorageClass>,
+    pub Option<CallingConv>,
+    pub Vec<ReturnAttr>,
+    pub Type,
+    pub GlobalIdent,
+    pub Params,
+    pub Option<UnnamedAddr>,
+    pub Vec<FuncAttr>,
+    pub Option<Section>,
+    pub Option<Comdat>,
+    pub Option<Gc>,
+    pub Option<Prefix>,
+    pub Option<Prologue>,
+    pub Option<Personality>,
+);
 
 pub type Params = Option<ParamList>;
 
 type ParamList = Vec<Param>;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Param {
-    type_: Type,
-    param_attrs: Vec<ParamAttr>,
-    local_ident: Option<LocalIdent>,
+pub struct Param (
+    pub Type,
+    pub Vec<ParamAttr>,
+    pub Option<LocalIdent>,
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Alignment(String);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum DereferenceableType {
+    Dereferenceable,
+    DereferenceableOrNull,
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct Dereferenceable(DereferenceableType, String);
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum ParamAttr {
-    // todo !!!
+    Alignment(Alignment),
+    Dereferenceable(Dereferenceable),
+    StringLit(StringLit),
+    Byval,
+    Inalloca,
+    Inreg,
+    Nest,
+    Noalias,
+    Nocapture,
+    Nonnull,
+    Readnone,
+    Readonly,
+    Returned,
+    Signext,
+    Sret,
+    Swifterror,
+    Swiftself,
+    Writeonly,
+    Zeroext
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ReturnAttr {
+    Alignment(Alignment),
+    Dereferenceable(Dereferenceable),
+    StringLit(StringLit),
+    Inreg,
+    Noalias,
+    Nonnull,
+    Signext,
+    Zeroext
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -301,13 +473,413 @@ pub struct BasicBlock {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Instruction {
-    // todo !!!
+    StoreInst(StoreInst),
+    FenceInst(FenceInst),
+    CmpXchgInst(CmpXchgInst),
+    AtomicRMWInst(AtomicRMWInst),
+    BindInst(LocalIdent, ValueInstruction),
+    ValueInstruction(ValueInstruction)
 }
 
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct OptVolatile (pub bool);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StoreInstType1 (
+    pub OptVolatile,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StoreInstType2 (
+    pub OptVolatile,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub Alignment,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StoreInstType3 (
+    pub OptVolatile,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub OptSyncScope,
+    pub AtomicOrdering,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StoreInstType4 (
+    pub OptVolatile,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub OptSyncScope,
+    pub AtomicOrdering,
+    pub Alignment,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum StoreInst {
+    Type1(StoreInstType1),
+    Type2(StoreInstType2),
+    Type3(StoreInstType3),
+    Type4(StoreInstType4),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FenceInst (
+    pub OptSyncScope,
+    pub AtomicOrdering,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+pub type OptWeak = bool;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CmpXchgInst (
+    pub OptWeak,
+    pub OptVolatile,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub OptSyncScope,
+    pub AtomicOrdering,
+    pub AtomicOrdering,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AtomicRMWInst(
+    pub OptVolatile,
+    pub BinOp,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub OptSyncScope,
+    pub AtomicOrdering,
+    pub OptCommaSepMetadataAttachmentList,
+);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum BinOp {
+    Add,
+    And,
+    Max,
+    Min,
+    Nand,
+    Or,
+    Sub,
+    Umax,
+    Umin,
+    Xchg,
+    Xor
+}
+
+pub type OptSyncScope = Option<StringLit>;
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum AtomicOrdering {
+    AcqRel,
+    Acquire,
+    Monotonic,
+    Release,
+    SeqCst,
+    Unordered
+}
+
+pub type OptCommaSepMetadataAttachmentList = Option<MetadataAttachmentList>;
+
+pub type MetadataAttachmentList = Vec<MetadataAttachment>;
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum OverFlowFlag {
+    Nsw,
+    Nuw,
+}
+
+pub type OverflowFlagList = Vec<OverflowFlag>;
+
+pub type OverflowFlags = Option<OverflowFlagList>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AddInst(
+    pub OverflowFlags,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum FastMathFlag {
+    Afn,
+    Arcp,
+    Contract,
+    Fast,
+    Ninf,
+    Nnan,
+    Nsz,
+    Reassoc
+}
+
+pub type FastMathFlagsList = Vec<FastMathFlag>;
+
+pub type FastMathFlags = Option<FastMathFlagsList>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FAddInst(
+    pub FastMathFlags,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SubInst(
+    pub OverflowFlags,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FSubInst(
+    pub FastMathFlags,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MulInst(
+    pub OverflowFlags,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FMulInst(
+    pub FastMathFlags,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UDivInst(
+    pub OptExact,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SDivInst(
+    pub OptExact,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FDivInst(
+    pub FastMathFlags,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct URemInst(
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SRemInst(
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FRemInst(
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ShlInst(
+    pub OverflowFlags,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LshrInst(
+    pub OptExact,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AshrInst(
+    pub OptExact,
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AndInst(
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OrInst(
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct XorInst(
+    pub Type,
+    pub Value,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ExtractValueInst(
+    pub Type,
+    pub Value,
+    pub IndexList,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct InsertValueInst(
+    pub Type,
+    pub Value,
+    pub IndexList,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+// todo
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ValueInstruction {
+    AddInst(AddInst),
+    FAddInst(FAddInst),
+    SubInst(SubInst),
+    FSubInst(FSubInst),
+    MulInst(MulInst),
+    FMulInst(FMulInst),
+    UDivInst(UDivInst),
+    SDivInst(SDivInst),
+    FDivInst(FDivInst),
+    URemInst(URemInst),
+    SRemInst(SRemInst),
+    FRemInst(FRemInst),
+    ShlInst(ShlInst),
+    LShrInst(LShrInst),
+    AShrInst(AShrInst),
+    AndInst(AndInst),
+    OrInst(OrInst),
+    XorInst(XorInst),
+    ExtractElementInst(ExtractElementInst),
+    InsertElementInst(InsertElementInst),
+    ShuffleVectorInst(ShuffleVectorInst),
+    ExtractValueInst(ExtractValueInst),
+    InsertValueInst(InsertValueInst),
+    AllocaInst(AllocaInst),
+    LoadInst(LoadInst),
+    GetElementPtrInst(GetElementPtrInst),
+    TruncInst(TruncInst),
+    ZExtInst(ZExtInst),
+    SExtInst(SExtInst),
+    FPTruncInst(FPTruncInst),
+    FPExtInst(FPExtInst),
+    FPToUIInst(FPToUIInst),
+    FPToSIInst(FPToSIInst),
+    UIToFPInst(UIToFPInst),
+    SIToFPInst(SIToFPInst),
+    PtrToIntInst(PtrToIntInst),
+    IntToPtrInst(IntToPtrInst),
+    BitCastInst(BitCastInst),
+    AddrSpaceCastInst(AddrSpaceCastInst),
+    ICmpInst(ICmpInst),
+    FCmpInst(FCmpInst),
+    PhiInst(PhiInst),
+    SelectInst(SelectInst),
+    CallInst(CallInst),
+    VAArgInst(VAArgInst),
+    LandingPadInst(LandingPadInst),
+    CatchPadInst(CatchPadInst),
+    CleanupPadInst(CleanupPadInst)
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Terminator {
     // todo !!!
+    RetTerm,
+    BrTerm,
+    CondBrTerm,
+    SwitchTerm,
+    IndirectBrTerm,
+    InvokeTerm,
+    ResumeTerm,
+    CatchSwitchTerm,
+    CatchRetTerm,
+    CleanupRetTerm,
+    UnreachableTerm
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -326,8 +898,8 @@ pub struct NamedMetadataDef {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum MetadataNode {
-    // todo !!!
     MetadataID(MetadataID),
+    // todo !!!
     // DIExpression(DIExpression),
 }
 
@@ -369,9 +941,22 @@ pub enum Value {
     InlineAsm(InlineAsm),
 }
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct OptSideEffect(bool);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct OptAlignStack(bool);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct OptIntelDialect(bool);
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct InlineAsm {
-    // todo
+    opt_side_effect: OptSideEffect,
+    opt_align_stack: OptAlignStack,
+    opt_intel_dialect: OptIntelDialect,
+    string_lit1: StringLit,
+    string_lit2: StringLit,
 }
 
 
@@ -413,12 +998,6 @@ pub struct StructConst(pub TypeConsts);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct BlockAddressConst(pub GlobalIdent, pub LocalIdent);
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum OverFlowFlag {
-    Nsw,
-    Nuw,
-}
 
 pub type OverFlowFlags = Vec<OverFlowFlag>;
 
@@ -536,9 +1115,46 @@ pub enum Constant {
     ConstantExpr(Arc<ConstantExpr>),
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub struct IntType(String);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum FloatKind {
+    Half,
+    Float,
+    Double,
+    X86Fp80,
+    Fp128,
+    PpcFp128
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct VectorType(IntLit, Arc<Type>);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ArrayType(IntLit, Arc<Type>);
+
+type TypeList = Vec<Type>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StructType(TypeList);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NamedType(LocalIdent);
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Type {
-    Void,
-    // todo
+    VoidType,
+    IntType(IntType),
+    FloatType(FloatKind),
+    VectorType(VectorType),
+    ArrayType(ArrayType),
+    StructType(StructType),
+    NamedType(NamedType),
+    MMXType,
+    LabelType,
+    TokenType,
+    MetaDataType,
+    FuncType(Arc<Type>, Params),
+    PointerType(Arc<Type>, Option<AddrSpace>),
 }

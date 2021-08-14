@@ -208,7 +208,10 @@ AllocaInst = { "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ OptCommaSepMetada
 OptInAlloca = { ("inalloca")? }
 OptSwiftError = { ("swifterror")? }
 LoadInst = { "load" ~ OptVolatile ~ Type ~ "," ~ Type ~ Value ~ OptCommaSepMetadataAttachmentList | "load" ~ OptVolatile ~ Type ~ "," ~ Type ~ Value ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList | "load" ~ "atomic" ~ OptVolatile ~ Type ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ OptCommaSepMetadataAttachmentList | "load" ~ "atomic" ~ OptVolatile ~ Type ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList }
-StoreInst = { "store" ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ OptCommaSepMetadataAttachmentList | "store" ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList | "store" ~ "atomic" ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ OptCommaSepMetadataAttachmentList | "store" ~ "atomic" ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList }
+StoreInst = {
+    "store" ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ OptCommaSepMetadataAttachmentList | "store" ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList |
+    "store" ~ "atomic" ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ OptCommaSepMetadataAttachmentList |
+    "store" ~ "atomic" ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList }
 FenceInst = { "fence" ~ OptSyncScope ~ AtomicOrdering ~ OptCommaSepMetadataAttachmentList }
 CmpXchgInst = { "cmpxchg" ~ OptWeak ~ OptVolatile ~ Type ~ Value ~ "," ~ Type ~ Value ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ AtomicOrdering ~ OptCommaSepMetadataAttachmentList }
 OptWeak = { ("weak")? }
