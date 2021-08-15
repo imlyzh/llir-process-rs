@@ -610,7 +610,7 @@ pub type OptCommaSepMetadataAttachmentList = Option<MetadataAttachmentList>;
 pub type MetadataAttachmentList = Vec<MetadataAttachment>;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub enum OverFlowFlag {
+pub enum OverflowFlag {
     Nsw,
     Nuw,
 }
@@ -754,7 +754,7 @@ pub struct ShlInst(
 );
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct LshrInst(
+pub struct LShrInst(
     pub OptExact,
     pub Type,
     pub Value,
@@ -763,7 +763,7 @@ pub struct LshrInst(
 );
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct AshrInst(
+pub struct AShrInst(
     pub OptExact,
     pub Type,
     pub Value,
@@ -999,8 +999,6 @@ pub struct StructConst(pub TypeConsts);
 #[derive(Debug, Clone, PartialEq)]
 pub struct BlockAddressConst(pub GlobalIdent, pub LocalIdent);
 
-pub type OverFlowFlags = Vec<OverFlowFlag>;
-
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct OptExact(pub bool);
 
@@ -1017,11 +1015,11 @@ pub type Indices = Option<IndexList>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ConstantExpr {
-    AddExpr(OverFlowFlags, Type, Constant, Type, Constant),
+    AddExpr(OverflowFlags, Type, Constant, Type, Constant),
     FAddExpr(Type, Constant, Type, Constant),
-    SubExpr(OverFlowFlags, Type, Constant, Type, Constant),
+    SubExpr(OverflowFlags, Type, Constant, Type, Constant),
     FSubExpr(Type, Constant, Type, Constant),
-    MulExpr(OverFlowFlags, Type, Constant, Type, Constant),
+    MulExpr(OverflowFlags, Type, Constant, Type, Constant),
     FMulExpr(Type, Constant, Type, Constant),
     UDivExpr(OptExact, Type, Constant, Type, Constant),
     SDivExpr(OptExact, Type, Constant, Type, Constant),
@@ -1029,7 +1027,7 @@ pub enum ConstantExpr {
     URemExpr(Type, Constant, Type, Constant),
     SRemExpr(Type, Constant, Type, Constant),
     FRemExpr(Type, Constant, Type, Constant),
-    ShlExpr(OverFlowFlags, Type, Constant, Type, Constant),
+    ShlExpr(OverflowFlags, Type, Constant, Type, Constant),
     LShrExpr(OptExact, Type, Constant, Type, Constant),
     AShrExpr(OptExact, Type, Constant, Type, Constant),
     AndExpr(Type, Constant, Type, Constant),

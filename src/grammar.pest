@@ -204,7 +204,15 @@ InsertElementInst = { "insertelement" ~ Type ~ Value ~ "," ~ Type ~ Value ~ "," 
 ShuffleVectorInst = { "shufflevector" ~ Type ~ Value ~ "," ~ Type ~ Value ~ "," ~ Type ~ Value ~ OptCommaSepMetadataAttachmentList }
 ExtractValueInst = { "extractvalue" ~ Type ~ Value ~ "," ~ IndexList ~ OptCommaSepMetadataAttachmentList }
 InsertValueInst = { "insertvalue" ~ Type ~ Value ~ "," ~ Type ~ Value ~ "," ~ IndexList ~ OptCommaSepMetadataAttachmentList }
-AllocaInst = { "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ OptCommaSepMetadataAttachmentList | "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList | "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Type ~ Value ~ OptCommaSepMetadataAttachmentList | "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Type ~ Value ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList | "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ AddrSpace ~ OptCommaSepMetadataAttachmentList | "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Alignment ~ "," ~ AddrSpace ~ OptCommaSepMetadataAttachmentList | "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Type ~ Value ~ "," ~ AddrSpace ~ OptCommaSepMetadataAttachmentList | "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Type ~ Value ~ "," ~ Alignment ~ "," ~ AddrSpace ~ OptCommaSepMetadataAttachmentList }
+AllocaInst = {
+    "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ OptCommaSepMetadataAttachmentList |
+    "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList |
+    "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Type ~ Value ~ OptCommaSepMetadataAttachmentList |
+    "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Type ~ Value ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList |
+    "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ AddrSpace ~ OptCommaSepMetadataAttachmentList |
+    "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Alignment ~ "," ~ AddrSpace ~ OptCommaSepMetadataAttachmentList |
+    "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Type ~ Value ~ "," ~ AddrSpace ~ OptCommaSepMetadataAttachmentList |
+    "alloca" ~ OptInAlloca ~ OptSwiftError ~ Type ~ "," ~ Type ~ Value ~ "," ~ Alignment ~ "," ~ AddrSpace ~ OptCommaSepMetadataAttachmentList }
 OptInAlloca = { ("inalloca")? }
 OptSwiftError = { ("swifterror")? }
 LoadInst = { "load" ~ OptVolatile ~ Type ~ "," ~ Type ~ Value ~ OptCommaSepMetadataAttachmentList | "load" ~ OptVolatile ~ Type ~ "," ~ Type ~ Value ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList | "load" ~ "atomic" ~ OptVolatile ~ Type ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ OptCommaSepMetadataAttachmentList | "load" ~ "atomic" ~ OptVolatile ~ Type ~ "," ~ Type ~ Value ~ OptSyncScope ~ AtomicOrdering ~ "," ~ Alignment ~ OptCommaSepMetadataAttachmentList }
