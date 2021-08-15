@@ -5,8 +5,8 @@ use pest::{error::Error, Parser};
 use pest_derive::*;
 
 #[derive(Parser)]
-#[grammar = "./debug.pest"]
-// #[grammar = "./grammar.pest"]
+// #[grammar = "./debug.pest"]
+#[grammar = "./grammar.pest"]
 struct Llir();
 
 pub trait ParseFrom<T>

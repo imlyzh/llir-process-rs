@@ -795,6 +795,36 @@ pub struct XorInst(
     pub OptCommaSepMetadataAttachmentList
 );
 
+#[derive(Debug, Clone, PartialEq)]
+pub struct ExtractElementInst(
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct InsertElementInst(
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ShuffleVectorInst(
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub Type,
+    pub Value,
+    pub OptCommaSepMetadataAttachmentList
+);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ExtractValueInst(
